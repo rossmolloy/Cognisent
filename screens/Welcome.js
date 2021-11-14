@@ -1,41 +1,18 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
+import { Text, SafeAreaView } from 'react-native';
 
-import {
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
-    StyledButton,
-    ButtonText,
-    Line,
-    WelcomeContainer,
-    WelcomeImage,
-    Avatar,
-} from './../components/styles';
-
-const Welcome = () => {
-
+const Welcome = ({ navigation }) => {
     return (
-        <>
-            <StatusBar style="light" />
-            <InnerContainer>
-                <WelcomeImage resizeMode="cover" source={require('./../assets/icon.png')} />
-                <WelcomeContainer>
-                    <PageTitle welcome={true}>Welcome!</PageTitle>
-                    <SubTitle welcome={true}>Account</SubTitle>
-                    <SubTitle welcome={true}>account@email.com</SubTitle>
-                    <StyledFormArea>
-                        <Avatar resizeMode="cover" source={require('./../assets/favicon.png')} />
-                        <Line />
-                        <StyledButton onPress={() => {}}>
-                            <ButtonText>Logout</ButtonText>
-                        </StyledButton>
-                    </StyledFormArea>
-                </WelcomeContainer>
-            </InnerContainer>
-        </>    
-    );
-};
+        <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 50, fontWeight: 'bold' }}>Welcome!</Text>
+            <Text
+                style={{ color: 'red', fontSize: 20, paddingTop: 50 }}
+                onPress={() => navigation.navigate('Login')}
+            >
+                Log out
+            </Text>
+        </SafeAreaView>
+    )
+}
 
 export default Welcome;
