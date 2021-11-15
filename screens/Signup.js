@@ -57,7 +57,7 @@ const Signup = ({ navigation }) => {
             <View style={styles.container}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => { signupHandler({ email, password }); navigation.navigate('Welcome'); }}
+                    onPress={() => { signupHandler({ email, password }); navigation.navigate('Geofence'); }}
                 >
                     <Text style={{ color: 'white' }}>Sign up</Text>
                 </TouchableOpacity>
