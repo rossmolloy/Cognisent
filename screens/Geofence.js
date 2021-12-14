@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import MapView, { Circle } from "react-native-maps";
+import MapView, { Circle, Marker } from "react-native-maps";
 import { Text, SafeAreaView, StyleSheet } from "react-native";
 import * as Location from "expo-location";
+import Slider from "@react-native-community/slider";
 
 function Geofence({ navigation }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(null);
+  const [radius, setRadius] = useState(100);
+  const [latLng, setLatLng] = useState({
+    latitude: 53.2775,
+    longitude: -9.0107,
+  });
 
   useEffect(() => {
     (async () => {
@@ -18,6 +24,11 @@ function Geofence({ navigation }) {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+
+      setLatLng({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
 
       const region = {
         latitude: location.coords.latitude,
@@ -46,10 +57,35 @@ function Geofence({ navigation }) {
       <Text style={{ fontSize: 40, fontWeight: "bold", paddingBottom: 20 }}>
         Add safe area
       </Text>
-      <Text>{text}</Text>
       <MapView style={styles.map} initialRegion={region}>
-        <Circle center={{ latitude: 53, longitude: 9 }} radius={100} />
+        <Circle
+          center={latLng}
+          radius={radius}
+          strokeWidth={2}
+          strokeColor="red"
+        />
+        <Marker
+          draggable
+          coordinate={latLng}
+          onDragEnd={(event) =>
+            setLatLng({
+              latitude: event.nativeEvent.coordinate.latitude,
+              longitude: event.nativeEvent.coordinate.longitude,
+            })
+          }
+        />
       </MapView>
+      <Slider
+        style={styles.slider}
+        minimumValue={10}
+        value={radius}
+        maximumValue={5000}
+        step={100}
+        minimumTrackTintColor="white"
+        maximumTrackTintColor="black"
+        onValueChange={(value) => setRadius(value)}
+      />
+      <Text>{radius}</Text>
       <Text
         style={{ color: "red", fontSize: 20, paddingTop: 20 }}
         onPress={() => navigation.navigate("Login")}
@@ -70,6 +106,10 @@ const styles = StyleSheet.create({
   map: {
     width: 350,
     height: 500,
+  },
+  slider: {
+    width: 250,
+    height: 50,
   },
 });
 
