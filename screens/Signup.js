@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
   Text,
   TextInput,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function Signup({ navigation }) {
   const [email, setEmail] = useState("");

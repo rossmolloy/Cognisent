@@ -4,11 +4,11 @@ import {
   Image,
   Text,
   TextInput,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
