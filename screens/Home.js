@@ -3,7 +3,7 @@ import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import Geofence from "./Geofence";
+import Geofence from "../components/Geofence";
 
 import Welcome from "../components/Welcome";
 import Cameras from "../components/Cameras";

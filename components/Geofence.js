@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Circle, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Slider from "@react-native-community/slider";
@@ -56,9 +55,7 @@ function Geofence({ navigation }) {
   }
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-    >
+    <View>
       <Modal animationType="slide" transparent={true} visible={!locatedStatus}>
         <View style={styles.centred}>
           <View style={styles.modal}>
@@ -107,7 +104,7 @@ function Geofence({ navigation }) {
       >
         Log out
       </Text>
-    </SafeAreaView>
+    </View>
   );
 }
 

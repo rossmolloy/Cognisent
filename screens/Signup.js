@@ -14,60 +14,62 @@ function Signup({ navigation }) {
   const [password, setPassword] = useState("");
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text style={styles.baseText}>
-          <Text style={styles.titleText}>
-            Cognisent
-            {"\n"}
+    <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.baseText}>
+            <Text style={styles.titleText}>
+              Cognisent
+              {"\n"}
+            </Text>
+            <Text style={styles.baseText}>Stay Safe</Text>
           </Text>
-          <Text style={styles.baseText}>Stay Safe</Text>
-        </Text>
-      </View>
-      <View>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="grey"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="grey"
-          value={fullName}
-          onChangeText={setFullName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="grey"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry="true"
-        />
-      </View>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
-        >
-          <Text style={{ color: "white" }}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.register}>
-        <Text style={{ color: "grey" }}>Have an account? </Text>
-        <Text
-          style={{ color: "red" }}
-          onPress={() => navigation.navigate("Login")}
-        >
-          Log in
-        </Text>
-      </View>
-    </SafeAreaView>
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="grey"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            placeholderTextColor="grey"
+            value={fullName}
+            onChangeText={setFullName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="grey"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry="true"
+          />
+        </View>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Setup");
+            }}
+          >
+            <Text style={{ color: "white" }}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.register}>
+          <Text style={{ color: "white" }}>Have an account? </Text>
+          <Text
+            style={{ color: "black" }}
+            onPress={() => navigation.navigate("Login")}
+          >
+            Log in
+          </Text>
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -92,7 +94,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   titleText: {
-    color: "red",
+    color: "white",
     fontSize: 50,
   },
   input: {
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    backgroundColor: "#ff3333",
+    backgroundColor: "black",
     padding: 10,
     borderRadius: 5,
     width: 350,
