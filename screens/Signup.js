@@ -15,7 +15,7 @@ function Signup({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
         <View style={styles.container}>
           <Text style={styles.baseText}>
             <Text style={styles.titleText}>

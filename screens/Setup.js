@@ -7,7 +7,7 @@ import Geofence from "../components/Geofence";
 function Setup({ navigation }) {
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
         <Geofence navigation={navigation} />
       </SafeAreaView>
     </View>
@@ -17,7 +17,6 @@ function Setup({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ff3333",
   },
 });
 
