@@ -21,7 +21,5 @@ Cognisent is a mobile application that keeps you aware of your loved ones' safet
 ### Sources of Research
 
 * [Expo API Reference](https://docs.expo.dev/versions/latest/)
-
 * [React Native Docs](https://reactnative.dev/docs/getting-started)
-
 * [React Navigation Docs](https://reactnavigation.org/docs/getting-started)
