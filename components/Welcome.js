@@ -7,19 +7,17 @@ import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
 function Welcome({ navigation }) {
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <FocusAwareStatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container} edges={["top"]}>
-        <Text style={styles.text}>Welcome!</Text>
-        <MapView style={styles.map} />
-        <Text
-          style={{ color: "red", fontSize: 20, paddingTop: 20 }}
-          onPress={() => navigation.navigate("Login")}
-        >
-          Log out
-        </Text>
-      </SafeAreaView>
-    </View>
+      <Text style={styles.text}>Welcome!</Text>
+      <MapView style={styles.map} />
+      <Text
+        style={{ color: "red", fontSize: 20, paddingTop: 20 }}
+        onPress={() => navigation.navigate("Login")}
+      >
+        Log out
+      </Text>
+    </SafeAreaView>
   );
 }
 

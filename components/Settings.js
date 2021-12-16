@@ -6,12 +6,10 @@ import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
 function Settings() {
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
       <FocusAwareStatusBar barStyle="dark-content" />
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-        <Text>Settings!</Text>
-      </SafeAreaView>
-    </View>
+      <Text>Settings!</Text>
+    </SafeAreaView>
   );
 }
 

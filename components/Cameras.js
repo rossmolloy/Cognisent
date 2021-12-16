@@ -16,8 +16,8 @@ function Cameras() {
 
   return (
     <View style={styles.container}>
-      <FocusAwareStatusBar barStyle="light-content" />
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+        <FocusAwareStatusBar barStyle="light-content" />
         <Camera style={styles.camera} type={facing} />
       </SafeAreaView>
     </View>

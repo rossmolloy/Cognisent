@@ -58,63 +58,57 @@ function Geofence({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
       <FocusAwareStatusBar barStyle="dark-content" />
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={!locatedStatus}
-        >
-          <View style={styles.centred}>
-            <View style={styles.modal}>
-              <Text>Getting current location...</Text>
-            </View>
+      <Modal animationType="slide" transparent={true} visible={!locatedStatus}>
+        <View style={styles.centred}>
+          <View style={styles.modal}>
+            <Text>Getting current location...</Text>
           </View>
-        </Modal>
-        <Text style={{ fontSize: 40, fontWeight: "bold", paddingBottom: 20 }}>
-          Add safe area
-        </Text>
-        {!locatedStatus && <MapView style={styles.map} />}
-        {locatedStatus && (
-          <MapView style={styles.map} initialRegion={region}>
-            <Circle
-              center={latLng}
-              radius={radius}
-              strokeWidth={2}
-              strokeColor="red"
-            />
-            <Marker
-              draggable
-              coordinate={latLng}
-              onDragEnd={(event) =>
-                setLatLng({
-                  latitude: event.nativeEvent.coordinate.latitude,
-                  longitude: event.nativeEvent.coordinate.longitude,
-                })
-              }
-            />
-          </MapView>
-        )}
-        <Slider
-          style={styles.slider}
-          minimumValue={10}
-          value={radius}
-          maximumValue={5000}
-          step={100}
-          minimumTrackTintColor="white"
-          maximumTrackTintColor="black"
-          onValueChange={(value) => setRadius(value)}
-        />
-        <Text>{radius}</Text>
-        <Text
-          style={{ color: "red", fontSize: 20, paddingTop: 20 }}
-          onPress={() => navigation.navigate("Login")}
-        >
-          Log out
-        </Text>
-      </SafeAreaView>
-    </View>
+        </View>
+      </Modal>
+      <Text style={{ fontSize: 40, fontWeight: "bold", paddingBottom: 20 }}>
+        Add safe area
+      </Text>
+      {!locatedStatus && <MapView style={styles.map} />}
+      {locatedStatus && (
+        <MapView style={styles.map} initialRegion={region}>
+          <Circle
+            center={latLng}
+            radius={radius}
+            strokeWidth={2}
+            strokeColor="red"
+          />
+          <Marker
+            draggable
+            coordinate={latLng}
+            onDragEnd={(event) =>
+              setLatLng({
+                latitude: event.nativeEvent.coordinate.latitude,
+                longitude: event.nativeEvent.coordinate.longitude,
+              })
+            }
+          />
+        </MapView>
+      )}
+      <Slider
+        style={styles.slider}
+        minimumValue={10}
+        value={radius}
+        maximumValue={5000}
+        step={100}
+        minimumTrackTintColor="white"
+        maximumTrackTintColor="black"
+        onValueChange={(value) => setRadius(value)}
+      />
+      <Text>{radius}</Text>
+      <Text
+        style={{ color: "red", fontSize: 20, paddingTop: 20 }}
+        onPress={() => navigation.navigate("Login")}
+      >
+        Log out
+      </Text>
+    </SafeAreaView>
   );
 }
 
