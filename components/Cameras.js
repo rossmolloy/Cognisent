@@ -18,7 +18,9 @@ function Cameras() {
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <FocusAwareStatusBar barStyle="light-content" />
-        <Camera style={styles.camera} type={facing} />
+        <View style={styles.cameraContainer}>
+          <Camera style={styles.camera} type={facing} />
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -29,10 +31,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
   },
+  cameraContainer: {
+    flex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    overflow: "hidden",
+  },
   camera: {
     flex: 1,
-    borderRadius: 20,
-    overflow: "hidden",
   },
 });
 

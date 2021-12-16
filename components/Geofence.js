@@ -8,84 +8,72 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
 function Geofence({ navigation }) {
+  const [permission, setPermission] = useState(null);
   const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [region, setRegion] = useState(null);
+  const [locationFound, setLocationFound] = useState(false);
   const [radius, setRadius] = useState(100);
-  const [latLng, setLatLng] = useState({
-    latitude: 53.2775,
-    longitude: -9.0107,
-  });
 
-  const [locatedStatus, setLocatedStatus] = useState(false);
+  const requestPermissions = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      return;
+    }
+  };
+
+  const getLocation = async () => {
+    let location = await Location.getCurrentPositionAsync();
+    setLocation(location);
+    setLocationFound(true);
+  };
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-      setLatLng({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-
-      const region = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
-      setRegion(region);
-
-      setLocatedStatus(true);
-    })();
+    requestPermissions();
+    getLocation();
   }, []);
 
-  let count = 0;
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    count += 1;
-    text = "updated: " + count + " times, " + JSON.stringify(location);
-  }
-
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <FocusAwareStatusBar barStyle="dark-content" />
-      <Modal animationType="slide" transparent={true} visible={!locatedStatus}>
+      <Modal animationType="slide" transparent={true} visible={!locationFound}>
         <View style={styles.centred}>
           <View style={styles.modal}>
             <Text>Getting current location...</Text>
           </View>
         </View>
       </Modal>
-      <Text style={{ fontSize: 40, fontWeight: "bold", paddingBottom: 20 }}>
-        Add safe area
-      </Text>
-      {!locatedStatus && <MapView style={styles.map} />}
-      {locatedStatus && (
-        <MapView style={styles.map} initialRegion={region}>
+      <Text style={styles.text}>Add safe area</Text>
+      {!locationFound && <MapView style={styles.map} />}
+      {locationFound && (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          }}
+        >
           <Circle
-            center={latLng}
+            center={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            }}
             radius={radius}
             strokeWidth={2}
             strokeColor="red"
           />
           <Marker
             draggable
-            coordinate={latLng}
-            onDragEnd={(event) =>
-              setLatLng({
-                latitude: event.nativeEvent.coordinate.latitude,
-                longitude: event.nativeEvent.coordinate.longitude,
+            coordinate={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            }}
+            onDragEnd={(updatedMarker) =>
+              setLocation({
+                coords: {
+                  latitude: updatedMarker.nativeEvent.coordinate.latitude,
+                  longitude: updatedMarker.nativeEvent.coordinate.longitude,
+                },
               })
             }
           />
@@ -95,7 +83,7 @@ function Geofence({ navigation }) {
         style={styles.slider}
         minimumValue={10}
         value={radius}
-        maximumValue={5000}
+        maximumValue={10000}
         step={100}
         minimumTrackTintColor="white"
         maximumTrackTintColor="black"
@@ -114,10 +102,13 @@ function Geofence({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 20,
+  },
+  text: {
+    fontSize: 40,
+    fontWeight: "bold",
+    paddingBottom: 20,
   },
   map: {
     width: 375,
