@@ -87,7 +87,7 @@ const GeofenceConfig = () => {
         maximumTrackTintColor="black"
         onValueChange={(value) => setRadius(value)}
       />
-      <Text>{radius}</Text>
+      <Text>{radius} m</Text>
     </View>
   );
 };

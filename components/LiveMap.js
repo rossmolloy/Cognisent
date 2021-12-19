@@ -78,7 +78,12 @@ const LiveMap = () => {
         </MapView>
       )}
       <Text>Updated: {count} times</Text>
-      {addressFound && <Text style={{ fontSize: 30 }}>{address.name}</Text>}
+      {addressFound && (
+        <View style={styles.textView}>
+          <Text style={styles.text}>You are at</Text>
+          <Text style={styles.address}>{address.name}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -88,8 +93,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  textView: {
+    alignItems: "center",
+    marginTop: "5%",
+  },
   text: {
-    fontSize: 50,
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  address: {
+    fontSize: 25,
     fontWeight: "bold",
   },
   map: {
