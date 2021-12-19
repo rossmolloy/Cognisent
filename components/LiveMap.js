@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
-function Welcome({ navigation }) {
+const LiveMap = () => {
   const [location, setLocation] = useState({});
   const [address, setAddress] = useState(null);
   const [locationFound, setLocationFound] = useState(false);
@@ -58,13 +58,11 @@ function Welcome({ navigation }) {
   return (
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle="dark-content" />
-      <Text style={styles.text}>Welcome!</Text>
-      <Text>Updated: {count} times</Text>
       {!locationFound && <MapView style={styles.map} />}
       {locationFound && (
         <MapView
           style={styles.map}
-          region={{
+          initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             latitudeDelta: 0.003,
@@ -79,21 +77,15 @@ function Welcome({ navigation }) {
           />
         </MapView>
       )}
+      <Text>Updated: {count} times</Text>
       {addressFound && <Text style={{ fontSize: 30 }}>{address.name}</Text>}
-      <Text
-        style={{ color: "red", fontSize: 20, paddingTop: 20 }}
-        onPress={() => navigation.navigate("Login")}
-      >
-        Log out
-      </Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   text: {
@@ -102,9 +94,9 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "60%",
+    height: "85%",
     borderRadius: 10,
   },
 });
 
-export default Welcome;
+export default LiveMap;

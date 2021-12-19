@@ -1,31 +1,29 @@
 import React from "react";
 import { Image } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Geofence from "../components/Geofence";
-
-import Welcome from "../components/Welcome";
-import Cameras from "../components/Cameras";
+import Record from "../components/Record";
+import LiveMap from "../components/LiveMap";
 import Settings from "../components/Settings";
 
 const Tab = createBottomTabNavigator();
 
-function Home() {
+const HomeScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
       <Tab.Navigator
         screenOptions={{
-          headerShown: false,
           showIcon: true,
           tabBarActiveTintColor: "red",
           tabBarStyle: { height: "13%", paddingBottom: "11%" },
         }}
       >
         <Tab.Screen
-          name="Welcome"
-          component={Welcome}
+          name="Location"
+          component={LiveMap}
           options={{
+            headerShown: false,
             tabBarIcon: () => (
               <Image
                 source={require("../assets/home.png")}
@@ -35,21 +33,10 @@ function Home() {
           }}
         />
         <Tab.Screen
-          name="Geofence"
-          component={Geofence}
-          options={{
-            tabBarIcon: () => (
-              <Image
-                source={require("../assets/home.png")}
-                style={{ height: 25, width: 24 }}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
           name="Camera"
-          component={Cameras}
+          component={Record}
           options={{
+            headerShown: false,
             tabBarIcon: () => (
               <Image
                 source={require("../assets/camera.png")}
@@ -62,6 +49,7 @@ function Home() {
           name="Settings"
           component={Settings}
           options={{
+            headerShown: true,
             tabBarIcon: () => (
               <Image
                 source={require("../assets/settings.png")}
@@ -73,6 +61,6 @@ function Home() {
       </Tab.Navigator>
     </SafeAreaView>
   );
-}
+};
 
-export default Home;
+export default HomeScreen;

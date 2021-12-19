@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
 import MapView, { Circle, Marker } from "react-native-maps";
-import * as Location from "expo-location";
 import Slider from "@react-native-community/slider";
-import { SafeAreaView } from "react-native-safe-area-context";
+import * as Location from "expo-location";
 
 import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
-function Geofence({ navigation }) {
-  const [permission, setPermission] = useState(null);
+const GeofenceConfig = () => {
   const [location, setLocation] = useState(null);
   const [locationFound, setLocationFound] = useState(false);
   const [radius, setRadius] = useState(100);
@@ -32,16 +30,16 @@ function Geofence({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <View style={styles.container}>
       <FocusAwareStatusBar barStyle="dark-content" />
       <Modal animationType="slide" transparent={true} visible={!locationFound}>
-        <View style={styles.centred}>
+        <View style={styles.centreModal}>
           <View style={styles.modal}>
             <Text>Getting current location...</Text>
           </View>
         </View>
       </Modal>
-      <Text style={styles.text}>Add safe area</Text>
+      <Text style={styles.text}>Add Safe Area</Text>
       {!locationFound && <MapView style={styles.map} />}
       {locationFound && (
         <MapView
@@ -84,25 +82,18 @@ function Geofence({ navigation }) {
         minimumValue={10}
         value={radius}
         maximumValue={10000}
-        step={100}
+        step={10}
         minimumTrackTintColor="white"
         maximumTrackTintColor="black"
         onValueChange={(value) => setRadius(value)}
       />
       <Text>{radius}</Text>
-      <Text
-        style={{ color: "red", fontSize: 20, paddingTop: 20 }}
-        onPress={() => navigation.navigate("Login")}
-      >
-        Log out
-      </Text>
-    </SafeAreaView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
   },
   text: {
@@ -118,27 +109,24 @@ const styles = StyleSheet.create({
     width: 250,
     height: 50,
   },
-  centred: {
+  centreModal: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(50, 50, 50, 0.7)",
   },
   modal: {
-    margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
+    borderRadius: 15,
+    padding: 40,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "black",
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 1,
+      height: 1,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.5,
   },
 });
 
-export default Geofence;
+export default GeofenceConfig;

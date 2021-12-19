@@ -1,61 +1,56 @@
 import React, { useState } from "react";
 import {
-  KeyboardAvoidingView,
   Image,
+  KeyboardAvoidingView,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function Login({ navigation }) {
+import FocusAwareStatusBar from "../components/FocusAwareStatusBar";
+
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
     <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
-      <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
-        <View style={styles.container}>
-          <Image
-            style={styles.logo}
-            source={{
-              uri: "https://static.thenounproject.com/png/8353-200.png",
-            }}
-          />
+      <FocusAwareStatusBar barStyle="light-content" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <View
+          style={styles.logoView}
+        >
+          <Image style={styles.logo} source={require("../assets/wings.png")} />
         </View>
-        <View style={styles.container}>
-          <Text style={styles.baseText}>
-            <Text style={styles.titleText}>
-              Cognisent
-              {"\n"}
-            </Text>
-            <Text style={styles.baseText}>Stay Safe</Text>
+        <View style={styles.nameView}>
+          <Text style={styles.text}>
+            <Text style={styles.title}>Cognisent</Text>
           </Text>
+          <Text style={styles.text}>Stay Safe</Text>
         </View>
         <KeyboardAvoidingView behavior="padding">
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="grey"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="grey"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry="true"
-            />
-          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="grey"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="grey"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry="true"
+          />
           <View style={styles.container}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.navigate("HomeScreen")}
             >
               <Text style={{ color: "white" }}>Login</Text>
             </TouchableOpacity>
@@ -65,7 +60,7 @@ function Login({ navigation }) {
           <Text style={{ color: "white" }}>Don't have an account? </Text>
           <Text
             style={{ color: "black" }}
-            onPress={() => navigation.navigate("Signup")}
+            onPress={() => navigation.navigate("SignupScreen")}
           >
             Sign up
           </Text>
@@ -73,36 +68,42 @@ function Login({ navigation }) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
   },
-  tinyLogo: {
-    height: 250,
-    width: 250,
+  logoView: {
+    flex: 0.4,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "5%",
   },
   logo: {
-    height: 250,
-    width: 250,
+    width: "50%",
+    resizeMode: "contain",
   },
-  baseText: {
+  text: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
   },
-  titleText: {
+  title: {
     color: "white",
     fontSize: 50,
+  },
+  nameView: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
   input: {
     height: 40,
     margin: 12,
-    borderWidth: 1,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "#f5f5f5",
@@ -118,8 +119,8 @@ const styles = StyleSheet.create({
   register: {
     flexDirection: "row",
     justifyContent: "center",
-    paddingTop: 40,
+    paddingTop: "8%",
   },
 });
 
-export default Login;
+export default LoginScreen;
