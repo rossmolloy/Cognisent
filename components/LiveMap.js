@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   },
   textView: {
     alignItems: "center",
-    marginTop: "5%",
   },
   text: {
     fontSize: 15,
