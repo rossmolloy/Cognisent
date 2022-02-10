@@ -15,6 +15,20 @@ const SignupScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
+  // const signupHandler = () => {
+  //   fetch("http://IPADDRESS:8000/signup", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       email: email,
+  //       fullName: fullName,
+  //       password: password,
+  //     }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  // };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
       <FocusAwareStatusBar barStyle="light-content" />
@@ -50,12 +64,7 @@ const SignupScreen = ({ navigation }) => {
           />
         </View>
         <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.navigate("SetupScreen");
-            }}
-          >
+          <TouchableOpacity style={styles.button} /* onPress={signupHandler} */>
             <Text style={{ color: "white" }}>Sign up</Text>
           </TouchableOpacity>
         </View>
