@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,16 +13,59 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FocusAwareStatusBar from "../components/FocusAwareStatusBar";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [login, setLogin] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState(false);
+
+  const loginHandler = async () => {
+    try {
+      const response = await fetch(
+        "http://ec2-***-***-***-***.compute-1.amazonaws.com:8000/login",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            phone: phone,
+            password: password,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error: " + response.status);
+      }
+
+      setError(false);
+      setLoggedIn(true);
+    } catch (exception) {
+      setError(true);
+      setLoggedIn(false);
+    }
+  };
+
+  useEffect(() => {
+    if (login) {
+      loginHandler();
+      setLogin(false);
+    }
+  }, [login]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      setLoggedIn(false);
+      navigation.replace("HomeScreen", { phone: phone });
+    }
+  }, [loggedIn]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
       <FocusAwareStatusBar barStyle="light-content" />
       <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={styles.logoView}
-        >
+        <View style={styles.logoView}>
           <Image style={styles.logo} source={require("../assets/wings.png")} />
         </View>
         <View style={styles.nameView}>
@@ -34,10 +77,11 @@ const LoginScreen = ({ navigation }) => {
         <KeyboardAvoidingView behavior="padding">
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder="Phone Number"
             placeholderTextColor="grey"
-            value={email}
-            onChangeText={setEmail}
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="number-pad"
           />
           <TextInput
             style={styles.input}
@@ -45,16 +89,21 @@ const LoginScreen = ({ navigation }) => {
             placeholderTextColor="grey"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry="true"
+            secureTextEntry={true}
           />
           <View style={styles.container}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("HomeScreen")}
+              onPress={() => setLogin(true)}
             >
               <Text style={{ color: "white" }}>Login</Text>
             </TouchableOpacity>
           </View>
+          {error && (
+            <View style={{ alignItems: "center" }}>
+              <Text>Error, could not log user in.</Text>
+            </View>
+          )}
         </KeyboardAvoidingView>
         <View style={styles.register}>
           <Text style={{ color: "white" }}>Don't have an account? </Text>

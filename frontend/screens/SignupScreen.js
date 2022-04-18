@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,23 +11,60 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FocusAwareStatusBar from "../components/FocusAwareStatusBar";
 
 const SignupScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+  const [contact1, setContact1] = useState("");
+  const [contact2, setContact2] = useState("");
+  const [contact3, setContact3] = useState("");
+  const [signUp, setSignUp] = useState(false);
+  const [signedUp, setSignedUp] = useState(false);
+  const [error, setError] = useState(false);
 
-  // const signupHandler = () => {
-  //   fetch("http://IPADDRESS:8000/signup", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       email: email,
-  //       fullName: fullName,
-  //       password: password,
-  //     }),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  // };
+  const signupHandler = async () => {
+    try {
+      const response = await fetch(
+        "http://ec2-***-***-***-***.compute-1.amazonaws.com:8000/signup",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            phone: phone,
+            fullName: fullName,
+            password: password,
+            contact1: contact1,
+            contact2: contact2,
+            contact3: contact3,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error: " + response.status);
+      }
+
+      setError(false);
+      setSignedUp(true);
+    } catch (exception) {
+      setError(true);
+      setSignedUp(false);
+    }
+  };
+
+  useEffect(() => {
+    if (signUp) {
+      signupHandler();
+      setSignUp(false);
+    }
+  }, [signUp]);
+
+  useEffect(() => {
+    if (signedUp) {
+      navigation.replace("SetupScreen", { phone: phone });
+    }
+  }, [signedUp]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "#ff3333" }}>
@@ -42,10 +79,11 @@ const SignupScreen = ({ navigation }) => {
         <View>
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder="Phone Number"
             placeholderTextColor="grey"
-            value={email}
-            onChangeText={setEmail}
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="number-pad"
           />
           <TextInput
             style={styles.input}
@@ -60,14 +98,46 @@ const SignupScreen = ({ navigation }) => {
             placeholderTextColor="grey"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry="true"
+            secureTextEntry={true}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Contact #1"
+            placeholderTextColor="grey"
+            value={contact1}
+            onChangeText={setContact1}
+            keyboardType="number-pad"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Contact #2"
+            placeholderTextColor="grey"
+            value={contact2}
+            onChangeText={setContact2}
+            keyboardType="number-pad"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Contact #3"
+            placeholderTextColor="grey"
+            value={contact3}
+            onChangeText={setContact3}
+            keyboardType="number-pad"
           />
         </View>
         <View style={styles.container}>
-          <TouchableOpacity style={styles.button} /* onPress={signupHandler} */>
-            <Text style={{ color: "white" }}>Sign up</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setSignUp(true)}
+          >
+            <Text style={{ color: "white" }}>Sign Up</Text>
           </TouchableOpacity>
         </View>
+        {error && (
+          <View style={{ alignItems: "center" }}>
+            <Text>Error, could not complete signup.</Text>
+          </View>
+        )}
         <View style={styles.login}>
           <Text style={{ color: "white" }}>Have an account? </Text>
           <Text

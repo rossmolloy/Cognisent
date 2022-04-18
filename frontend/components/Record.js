@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera } from "expo-camera";
 
@@ -9,7 +9,6 @@ const Record = () => {
   const [facing, setFacing] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
   const [recording, setRecording] = useState(false);
-  const [text, setText] = useState({ uri: "no recording yet..." });
   const [buttonColour, setButtonColour] = useState("white");
 
   const requestCameraPermissions = async () => {
@@ -28,10 +27,7 @@ const Record = () => {
 
   const startRecording = async () => {
     if (camera) {
-      let video = await camera.recordAsync();
-      if (video) {
-        setText({ uri: video.uri });
-      }
+      await camera.recordAsync();
     }
   };
 
@@ -39,6 +35,18 @@ const Record = () => {
     requestCameraPermissions();
     requestMicrophonePermissions();
   }, []);
+
+  useEffect(() => {
+    if (recording) {
+      setButtonColour("red");
+      startRecording();
+    } else {
+      setButtonColour("white");
+      if (camera !== null) {
+        camera.stopRecording();
+      }
+    }
+  }, [recording]);
 
   return (
     <View style={styles.container}>
@@ -51,18 +59,7 @@ const Record = () => {
             ref={(r) => {
               setCamera(r);
             }}
-          >
-            <Text
-              style={{
-                flex: 1,
-                color: "white",
-                fontSize: 10,
-                justifyContent: "flex-end",
-              }}
-            >
-              {text.uri}
-            </Text>
-          </Camera>
+          ></Camera>
           <View style={styles.buttonsContainer}>
             <View style={styles.recordContainer}>
               <TouchableOpacity
@@ -74,13 +71,6 @@ const Record = () => {
                 }}
                 onPress={() => {
                   setRecording(!recording);
-                  if (recording) {
-                    setButtonColour("red");
-                    startRecording();
-                  } else {
-                    setButtonColour("white");
-                    camera.stopRecording();
-                  }
                 }}
               />
             </View>

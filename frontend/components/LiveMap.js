@@ -1,25 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
-const LiveMap = () => {
+const LiveMap = ({ name }) => {
   const [location, setLocation] = useState({});
   const [address, setAddress] = useState(null);
   const [locationFound, setLocationFound] = useState(false);
   const [addressFound, setAddressFound] = useState(false);
-  const [count, setCount] = useState(0);
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
-  const requestPermissions = async () => {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+  const registerForPushNotifications = async () => {
+    if (Device.isDevice) {
+      let { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        return;
+      }
+    }
+  };
+
+  const schedulePushNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Location Update!",
+        body: name + " is at " + address.name + ".",
+      },
+      trigger: { seconds: 1 },
+    });
+  }
+
+  const startLocationUpdates = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       return;
     }
-  };
 
-  const startLocationUpdates = async () => {
     await Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.BestForNavigation,
@@ -30,7 +59,6 @@ const LiveMap = () => {
         if (!locationFound) {
           setLocationFound(true);
         }
-        setCount((i) => i + 1);
       }
     );
   };
@@ -47,12 +75,34 @@ const LiveMap = () => {
   };
 
   useEffect(() => {
-    requestPermissions();
     startLocationUpdates();
+    registerForPushNotifications();
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   useEffect(() => {
-    getAddressFromCoords(location.coords);
+    if (locationFound) {
+      const timer = setTimeout(() => {
+        getAddressFromCoords(location.coords);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
   }, [location]);
 
   return (
@@ -77,12 +127,20 @@ const LiveMap = () => {
           />
         </MapView>
       )}
-      <Text>Updated: {count} times</Text>
+      <View style={styles.textView}>
+        <Text style={styles.text}>You are at</Text>
+        {!addressFound && (
+          <Text style={styles.address}>Finding Location...</Text>
+        )}
+        {addressFound && <Text style={styles.address}>{address.name}</Text>}
+      </View>
       {addressFound && (
-        <View style={styles.textView}>
-          <Text style={styles.text}>You are at</Text>
-          <Text style={styles.address}>{address.name}</Text>
-        </View>
+        <Button
+          title="Send Notification"
+          onPress={async () => {
+            await schedulePushNotification();
+          }}
+        />
       )}
     </View>
   );

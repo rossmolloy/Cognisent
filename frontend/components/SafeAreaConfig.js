@@ -1,33 +1,123 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, Text, StyleSheet } from "react-native";
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import MapView, { Circle, Marker } from "react-native-maps";
 import Slider from "@react-native-community/slider";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
 
 import FocusAwareStatusBar from "./FocusAwareStatusBar";
 
-const GeofenceConfig = () => {
+const SafeAreaConfig = ({ phone }) => {
   const [location, setLocation] = useState(null);
+  const [noSavedLocation, setNoSavedLocation] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [updated, setUpdated] = useState(false);
   const [locationFound, setLocationFound] = useState(false);
   const [radius, setRadius] = useState(100);
 
-  const requestPermissions = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      return;
+  const navigation = useNavigation();
+
+  const getSafeArea = async () => {
+    try {
+      const response = await fetch(
+        `http://ec2-***-***-***-***.compute-1.amazonaws.com:8000/user/${phone}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error: " + response.status);
+      }
+
+      const user = await response.json();
+      if (user.hasOwnProperty("radius") && user.hasOwnProperty("location")) {
+        setLocation({
+          coords: {
+            latitude: user.location.latitude,
+            longitude: user.location.longitude,
+          },
+        });
+        setRadius(user.radius);
+        setLocationFound(true);
+      } else {
+        setNoSavedLocation(true);
+      }
+    } catch (exception) {
+      console.log(exception);
+    }
+  };
+
+  const updateSafeArea = async (body) => {
+    try {
+      const response = await fetch(
+        `http://ec2-***-***-***-***.compute-1.amazonaws.com:8000/update/${phone}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(body),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error: " + response.status);
+      }
+
+      setUpdated(true);
+    } catch (exception) {
+      setUpdated(false);
     }
   };
 
   const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      return;
+    }
+
     let location = await Location.getCurrentPositionAsync();
     setLocation(location);
     setLocationFound(true);
   };
 
   useEffect(() => {
-    requestPermissions();
-    getLocation();
+    const timer = setTimeout(() => {
+      getSafeArea();
+    }, 3000);
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (update) {
+      const body = {
+        radius: radius,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+      };
+
+      updateSafeArea(body);
+      setUpdate(false);
+    }
+  }, [update]);
+
+  useEffect(() => {
+    if (updated) {
+      navigation.replace("HomeScreen", { phone: phone });
+    }
+  }, [updated]);
+
+  useEffect(() => {
+    if (noSavedLocation) {
+      getLocation();
+    }
+  }, [noSavedLocation]);
 
   return (
     <View style={styles.container}>
@@ -35,7 +125,7 @@ const GeofenceConfig = () => {
       <Modal animationType="slide" transparent={true} visible={!locationFound}>
         <View style={styles.centreModal}>
           <View style={styles.modal}>
-            <Text>Getting current location...</Text>
+            <Text>Getting location...</Text>
           </View>
         </View>
       </Modal>
@@ -88,12 +178,29 @@ const GeofenceConfig = () => {
         onValueChange={(value) => setRadius(value)}
       />
       <Text>{radius} m</Text>
+      <TouchableOpacity style={styles.button} onPress={() => setUpdate(true)}>
+        <Text style={styles.buttonText}>Finish</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "black",
+    borderRadius: 5,
+    height: "6%",
+    width: 150,
+    marginTop: "5%",
+  },
+  buttonText: {
+    color: "white",
+    justifyContent: "center",
     alignItems: "center",
   },
   text: {
@@ -129,4 +236,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GeofenceConfig;
+export default SafeAreaConfig;
