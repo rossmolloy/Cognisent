@@ -38,7 +38,7 @@ const LiveMap = ({ name }) => {
       },
       trigger: { seconds: 1 },
     });
-  }
+  };
 
   const startLocationUpdates = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
