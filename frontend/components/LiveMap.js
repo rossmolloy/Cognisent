@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -12,9 +12,6 @@ const LiveMap = ({ name }) => {
   const [address, setAddress] = useState(null);
   const [locationFound, setLocationFound] = useState(false);
   const [addressFound, setAddressFound] = useState(false);
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -77,23 +74,6 @@ const LiveMap = ({ name }) => {
   useEffect(() => {
     startLocationUpdates();
     registerForPushNotifications();
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
   }, []);
 
   useEffect(() => {
